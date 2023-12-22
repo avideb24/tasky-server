@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const app = express();
 app.use(cors())
@@ -56,6 +56,43 @@ async function run() {
         const task = req.body;
         const result = await taskCollection.insertOne(task);
         res.send(result);
+    })
+    // app.delete('/tasks/:id', async(req, res) => {
+    //     const id = req.params.id;
+    //     const filter = { _id: new ObjectId(id)};
+    //     const result = await taskCollection.deleteOne(filter);
+    //     res.send(result);
+    // })
+
+    // app.patch('/task/update/:id', async(req, res) => {
+    //     const id = req.params.id;
+    //     const filter = { _id: new ObjectId(id)};
+        
+    //     // const result = await taskCollection.updateOne(filter, update);
+    //     // res.send(result)
+    // })
+
+    app.patch('/task/ongoing/:id', async(req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id)};
+        const update = {
+            $set: {
+                status: 'ongoing'
+            }
+        };
+        const result = await taskCollection.updateOne(filter, update);
+        res.send(result)
+    })
+    app.patch('/task/completed/:id', async(req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id)};
+        const update = {
+            $set: {
+                status: 'completed'
+            }
+        };
+        const result = await taskCollection.updateOne(filter, update);
+        res.send(result)
     })
 
 
